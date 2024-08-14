@@ -4,6 +4,16 @@
 
 A HashMap is a data structure that implements an associative array abstract data type, allowing for efficient mapping of keys to values. It uses a hash function to compute an index into an array of buckets, from which the desired value can be found.
 
+## Collisions in HashMaps
+
+A collision occurs when two different keys hash to the same index in the HashMap's underlying array.
+
+### What Causes Collisions?
+
+1. Limited array size: The number of possible keys often exceeds the array size.
+2. Imperfect hash functions: Even good hash functions can sometimes produce the same output for different inputs.
+
+
 ## Basic Operations and Time Complexities
 
 ### 1. put(key, value)
