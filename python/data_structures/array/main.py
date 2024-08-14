@@ -113,12 +113,8 @@ class Array:
         if self.length >= self.size:
             raise MemoryError("Array is full")
         if 0 <= index <= self.length:
-
             if self.type_ is None or isinstance(value, self.type_):
-
-                self.items.append(None) # We assign a temporary space
-
-                for i in range(self.length - 1, index, -1):
+                for i in range(self.length, index, -1):
                     self.items[i] = self.items[i - 1]
                 self.items[index] = value
                 self.length += 1
@@ -143,52 +139,34 @@ class Array:
         
         # Using `pop` for this method
 
-        index = None
+        index = -1
 
-        for itr in range(len(self.items)):
-            if self.items[itr] == value:
-                index = itr
-                break
+        for i in range(self.length):
+            if self.items[i] == value:
+                index = i
+
+        if index == -1:
+            raise ValueError("Element not found")
         
-        self.items.pop(index)
+        for i in range(index, self.length - 1):
+            self.items[i] = self.items[i + 1]
+        self.items[self.length - 1] = None
         self.length -= 1
 
-        # Implementing the above method without the `pop` function. It is a bit
-        # inefficient but doesn't rely on the in-built method.
-        # for itr in range(index, len(self.items) - 1):
-        #     self.items[itr] = self.items[itr + 1]
-
-        # self.items = self.items[:-1]
-
-    def pop(self, index=-1):
+    def __repr__(self):
         """
-        Remove and return the element at the specified index.
-
-        Args:
-            index (int): The index of the element to remove. Defaults to -1 (last element).
-
-        Returns:
-            The element that was removed.
-
-        Raises:
-            IndexError: If the index is out of range.
+        Required to print the array.
         """
-        if 0 <= index < self.size or -self.size <= index < 0:
-            value = self.items.pop(index)
-            self.size -= 1
-            return value
-        raise IndexError("Array index out of range")
-    
-    def __str__(self) -> str:
-        return str(self.items)
+        return f"Array({self.items[:self.length]})"
 
 
 if __name__ == "__main__":
     # Example usage
     arr = Array(5, int)
-    arr.append(5)
-    arr.append(4)
-    arr.append(6)
-    arr.append(4)
+    arr.append(5) # Should be [5]
+    arr.append(4) # Should be [5, 4]
+    arr.append(6) # Should be [5, 4, 6]
+    arr.append(4) # Should be [5, 4, 6, 4]
+    arr.remove(4) # Should be [5, 6, 4]
     print(arr)
 
