@@ -54,7 +54,7 @@ class Array:
             int: The index of the first occurrence of the value,
                  or -1 if the value is not found.
         """
-        for i in range(self.size):
+        for i in range(self.length):
             if self.items[i] == value:
                 return i
         return -1
@@ -113,8 +113,12 @@ class Array:
         if self.length >= self.size:
             raise MemoryError("Array is full")
         if 0 <= index <= self.length:
+
             if self.type_ is None or isinstance(value, self.type_):
-                for i in range(self.length, index, -1):
+
+                self.items.append(None) # We assign a temporary space
+
+                for i in range(self.length - 1, index, -1):
                     self.items[i] = self.items[i - 1]
                 self.items[index] = value
                 self.length += 1
@@ -122,25 +126,39 @@ class Array:
                 raise TypeError(f"Array elements must be of type {self.type_}")
         else:
             raise IndexError("Array index out of range")
+        
+    def remove(self, value):
+        """
+        Remove the first occurrence of a value from the array.
 
-    # def remove(self, value):
-    #     """
-    #     Remove the first occurrence of a value from the array.
+        Args:
+            value: The value to remove.
 
-    #     Args:
-    #         value: The value to remove.
+        Raises:
+            ValueError: If the value is not found in the array.
 
-    #     Raises:
-    #         ValueError: If the value is not found in the array.
-    #     """
-    #     if 0 <= index < self.length:
-    #         removed_value = self.items[index]
-    #         for i in range(index, self.length - 1):
-    #             self.items[i] = self.items[i + 1]
-    #         self.items[self.length - 1] = None
-    #         self.length -= 1
-    #         return removed_value
-    #     raise IndexError("Array index out of range")
+        """
+        if value not in self.items:
+            raise ValueError("Element not found")
+        
+        # Using `pop` for this method
+
+        index = None
+
+        for itr in range(len(self.items)):
+            if self.items[itr] == value:
+                index = itr
+                break
+        
+        self.items.pop(index)
+        self.length -= 1
+
+        # Implementing the above method without the `pop` function. It is a bit
+        # inefficient but doesn't rely on the in-built method.
+        # for itr in range(index, len(self.items) - 1):
+        #     self.items[itr] = self.items[itr + 1]
+
+        # self.items = self.items[:-1]
 
     def pop(self, index=-1):
         """
@@ -160,8 +178,17 @@ class Array:
             self.size -= 1
             return value
         raise IndexError("Array index out of range")
+    
+    def __str__(self) -> str:
+        return str(self.items)
 
 
 if __name__ == "__main__":
     # Example usage
-    arr = Array(items=[1, 2, 3, 4, 5], type=int)
+    arr = Array(5, int)
+    arr.append(5)
+    arr.append(4)
+    arr.append(6)
+    arr.append(4)
+    print(arr)
+
