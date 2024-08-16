@@ -57,7 +57,7 @@ class LinkedList:
                 return
 
             current_node = self.head
-            for _ in range(index - 1):
+            for _ in range(1, index):
                 if not current_node.next:  # Handle out of bounds
                     return "Invalid position"
                 current_node = current_node.next
@@ -87,17 +87,27 @@ class LinkedList:
             del temp
         else:
             current_node = self.head
-            for _ in range(index - 1):
-                if not current_node.next:  # Handle out of bounds
-                    return "Not possible"
+            
+            for _ in range(1, index):
+                if not current_node:  # Handle out of bounds
+                    raise IndexError("Invalid Index")
                 current_node = current_node.next
-
-            temp = current_node.next
-            if temp:
-                current_node.next = temp.next
-                del temp
-            else:
-                return "Not possible"  # If trying to delete a non-existent element
+            
+            next_node = current_node.next
+            
+            # We have reached the last one
+            if not next_node:
+                raise IndexError("Invalid index")
+                
+            if not next_node.next:
+                del next_node
+            
+            node_to_be_removed = current_node.next
+            current_node.next = node_to_be_removed.next
+            
+            del node_to_be_removed
+            return
+            
 
     def __str__(self):
         """
@@ -109,12 +119,12 @@ class LinkedList:
         Time complexity: O(n), where n is the number of nodes in the list.
         Space complexity: O(n)
         """
-        result = []
+        result = ""
         current_node = self.head
         while current_node:
-            result.append(current_node.value)
+            result += f"{current_node.value} -> " if current_node.next is not None else f"{current_node.value}"
             current_node = current_node.next
-        return str(result)
+        return result
 
 if __name__ == "__main__":
     # Example usage
@@ -122,12 +132,14 @@ if __name__ == "__main__":
     linked_list.insert_element(20, 0)
     linked_list.insert_element(30, 1)
     linked_list.insert_element(40, 2)
-    linked_list.insert_element(1000, 3)
+    print(linked_list) # 20 -> 30 -> 40
+    
+    linked_list.insert_element(1000, 3) 
     linked_list.insert_element(54, 2)
-    print(linked_list)  # [20, 30, 54, 40, 1000]
+    print(linked_list)  # 20 -> 30 -> 54 -> 40 -> 1000
 
     linked_list.delete_element(3)
-    print(linked_list)  # [20, 30, 54, 1000]
-
+    print(linked_list)  # 20 -> 30 -> 54 -> 1000
+    
     linked_list.delete_element(4)
-    print(linked_list)  # "Not possible" since index 4 is out of bounds
+    print(linked_list)  # Invalid Index
